@@ -21,6 +21,10 @@ class ComposerStaticInit1718360673e6fc6b0bc83447d45526d7
         array (
             'Composer\\CaBundle\\' => 18,
         ),
+        'A' => 
+        array (
+            'ADSWCS\\' => 7,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -44,6 +48,14 @@ class ComposerStaticInit1718360673e6fc6b0bc83447d45526d7
         array (
             0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
         ),
+        'ADSWCS\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/includes',
+        ),
+    );
+
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -51,6 +63,7 @@ class ComposerStaticInit1718360673e6fc6b0bc83447d45526d7
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit1718360673e6fc6b0bc83447d45526d7::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit1718360673e6fc6b0bc83447d45526d7::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit1718360673e6fc6b0bc83447d45526d7::$classMap;
 
         }, null, ClassLoader::class);
     }

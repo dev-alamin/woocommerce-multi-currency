@@ -28,10 +28,18 @@ function op_wc_price_shortcode_callback( $atts ) {
 
     if ( intval( $atts['id'] ) > 0 && function_exists( 'wc_get_product' ) ) {
         $_product = wc_get_product( $atts['id'] );
+		
+//         $regular_price = wc_price( $_product->get_regular_price(), array( 'decimals' => 0 ) );
+// 		$sale_price = wc_price( $_product->get_price(), array( 'decimals' => 0 ) );
+		$regular_price = $_product->get_regular_price();
+		$sale_price = $_product->get_price();
+
+
+
         ?>
         <p class="opl-custom-price">
-            <span class="price price-regular"><?php echo $currency_symbol . $_product->get_regular_price(); ?></span>
-            <span class="price price-sale"><?php echo $currency_symbol . $_product->get_price(); ?></span>
+            <span class="price price-regular"><?php echo $currency_symbol . $regular_price; ?></span>
+            <span class="price price-sale"><?php echo $currency_symbol . $sale_price; ?></span>
         </p>
         <script>
             var cacheBuster = <?php echo $cache_buster; ?>;
