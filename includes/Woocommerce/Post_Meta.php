@@ -1,27 +1,34 @@
 <?php 
 namespace ADSWCS\Woocommerce;
-use ADSWCS\Admin\Country;
-
+use ADSWCS\Traits\Trait_Country;
+/**
+ * Class Post_Meta
+ * Handles custom product meta fields for WooCommerce products.
+ */
 class Post_Meta{
+    use Trait_Country;
+
+    /**
+     * Constructor.
+     * Adds actions for adding and saving custom product fields.
+     */
     public function __construct() {
         add_action('woocommerce_product_options_general_product_data', [ $this, 'add_custom_product_fields'] );
         add_action('woocommerce_process_product_meta', [ $this, 'save_custom_product_fields' ] );
     }
 
+    /**
+     * Add custom product fields to the WooCommerce product data panel.
+     */
     public function add_custom_product_fields(){
         global $post, $woocommerce;
         $selectedCountries = get_option( 'selected_countries_option', [] );
-        // Add a new tab for country-specific prices
         echo '<div id="country_prices" class="woocommerce_options_panel">';
-
-        // Define the labels and descriptions for your fields in an associative array
-        $all_countries = new Country();
-        $get_all_countries = $all_countries->get_countries();
+        $get_all_countries = $this->get_countries();
         
         $field_labels = [];
         
         foreach ($get_all_countries as $country) {
-            // Use the country code as the key and the currency symbol as the value
             $field_labels[$country['code']] = $country['symbol'];
         }
         
@@ -29,10 +36,9 @@ class Post_Meta{
             if (isset($field_labels[$countryCode])) {
                 $currencySymbol = $field_labels[$countryCode];
         
-                // Regular Price Field
                 woocommerce_wp_text_input(
                     array(
-                        'id' => '_regular_price_' . $countryCode,
+                        'id' => '_regular_price_' . strtolower( $countryCode ),
                         'label' => __('Regular Price ' . $countryCode . ' (' . $currencySymbol . ')', 'ads-currency-switcher'),
                         'desc_tip' => 'true',
                         'description' => __('Enter the regular price for ' . $countryCode, 'ads-currency-switcher'),
@@ -40,10 +46,9 @@ class Post_Meta{
                     )
                 );
         
-                // Sale Price Field
                 woocommerce_wp_text_input(
                     array(
-                        'id' => '_sale_price_' . $countryCode,
+                        'id' => '_sale_price_' . strtolower( $countryCode ),
                         'label' => __('Sale Price ' . $countryCode . ' (' . $currencySymbol . ')', 'ads-currency-switcher'),
                         'desc_tip' => 'true',
                         'description' => __('Enter the sale price for ' . $countryCode, 'ads-currency-switcher'),
@@ -53,32 +58,28 @@ class Post_Meta{
             }
         }
         
-
-    
         echo '</div>';
     }
 
+    /**
+     * Save custom product fields when a product is updated.
+     *
+     * @param int $post_id The ID of the product being updated.
+     */
     public function save_custom_product_fields($post_id){
-        // Get the selected countries for which prices need to be saved
         $selectedCountries = get_option('selected_countries_option');
     
         foreach ($selectedCountries as $countryCode) {
-            // Define the post meta keys for regular and sale prices based on the country code
-            $regularPriceMetaKey = '_regular_price_' . $countryCode;
-            $salePriceMetaKey = '_sale_price_' . $countryCode;
+            $regularPriceMetaKey = '_regular_price_' . strtolower(  $countryCode );
+            $salePriceMetaKey = '_sale_price_' . strtolower(  $countryCode );
     
-            // Check if the regular price for this country is set in the POST data
             if (isset($_POST[$regularPriceMetaKey])) {
-                // Update the post meta for regular price
                 update_post_meta($post_id, $regularPriceMetaKey, sanitize_text_field($_POST[$regularPriceMetaKey]));
             }
     
-            // Check if the sale price for this country is set in the POST data
             if (isset($_POST[$salePriceMetaKey])) {
-                // Update the post meta for sale price
-                update_post_meta($post_id, $salePriceMetaKey, sanitize_text_field($_POST[$salePriceMetaKey]));
+                update_post_meta($post_id, $salePriceMetaKey, sanitize_text_field($_POST[$salePriceMetaKey] ) );
             }
         }
     }
-    
 }

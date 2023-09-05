@@ -46,6 +46,7 @@ final class ADSW_Currency_Switcher {
     private function __construct(){
         $this->define_constants();
         add_action( 'plugins_loaded', [ $this, 'init' ] );
+        
     }
 
     public static function get_instance() {
@@ -61,11 +62,11 @@ final class ADSW_Currency_Switcher {
 
         new \ADSWCS\Admin\Menu();
         $visitor = new \ADSWCS\Woocommerce\Visitor();
-        new \ADSWCS\Woocommerce\Post_Meta();
         $visitor->set_currency_based_on_country();
-        
-        if(is_admin()){
-        }
+
+        new \ADSWCS\Woocommerce\Post_Meta();
+        new \ADSWCS\Frontend\WC_Price_Shortcode();
+        new \ADSWCS\Assets();
     }
 
     /**

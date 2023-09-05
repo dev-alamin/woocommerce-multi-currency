@@ -1,7 +1,7 @@
 <?php 
-namespace ADSWCS\Admin;
+namespace ADSWCS\Traits;
 
-class Country {
+Trait Trait_Country {
     public function get_countries(){
         return array(
             array("name" => "Afghanistan","code" => "AF","symbol" => "؋","currency" => "AFN"),
