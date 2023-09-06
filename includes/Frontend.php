@@ -3,6 +3,6 @@ namespace ADSWCS;
 
 class Frontend{
     public function __construct(){
-        echo 'Hello from Frontend class';
+        new \ADSWCS\Frontend\WC_Price_Shortcode();
     }
 }

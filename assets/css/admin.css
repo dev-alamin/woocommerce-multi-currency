@@ -3,6 +3,14 @@
     border-radius: 10px;
     background: #fff;
 }
+
+.country-columns{
+    display: flex;
+}
+
+.country-columns .column{
+    margin-right:20px;
+}
     /* Style the checkboxes */
 input[type="checkbox"] {
     appearance: none; /* Remove default checkbox appearance */

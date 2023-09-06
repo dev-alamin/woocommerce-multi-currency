@@ -25,37 +25,25 @@ class Visitor {
      * @return string The updated currency based on the visitor's country.
      */
     public function change_woocommerce_currency_based_on_country($currency) {
-        // Get visitor's country
-        $get_all_countries = $this->get_countries();
-    
+        $countries = $this->get_countries();
         $country = $this->get_visitor_country();
-    
-        // Initialize the default currency
-        $default_currency = 'USD';
-    
-        // Search for the visitor's country code in the array and get the corresponding currency
-        foreach ($get_all_countries as $countryInfo) {
+        
+        foreach ($countries as $countryInfo) {
             if ($countryInfo['code'] === $country && isset($countryInfo['currency'])) {
-                $currency = $countryInfo['currency'];
-                break;
+                return $countryInfo['currency']; // Return the corresponding currency if found
             }
         }
-    
-        // If no matching currency is found, use the default currency
-        if ($currency === $default_currency) {
-            $currency = $default_currency;
-        }
-    
+        
         return $currency;
     }
     
-    public function set_currency_based_on_country() {
-        $visitor_country = $this->get_visitor_country();     
-        $get_all_countries = $this->get_countries();
-        $default_currency = 'USD';
-        $currency = $default_currency; 
     
-        foreach ($get_all_countries as $country) {
+    public function set_currency_based_on_country() {
+        $visitor_country = $this->get_visitor_country();
+        $countries = $this->get_countries();
+        $currency = $visitor_country; 
+        
+        foreach ($countries as $country) {
             if ($country['code'] === $visitor_country) {
                 $currency = $country['currency']; // Set currency based on the visitor's country code
                 break; // Stop looping once a match is found
@@ -65,6 +53,7 @@ class Visitor {
         // Update the WooCommerce currency option
         update_option('woocommerce_currency', $currency);
     }
+    
 
     /**
      * Adjust product prices based on the visitor's country.
@@ -73,7 +62,7 @@ class Visitor {
      * @param object $product The WooCommerce product object.
      * @return float The updated product price.
      */
-    function adjust_product_prices_based_on_country($price, $product) {
+    public function adjust_product_prices_based_on_country($price, $product) {
         $user_country = strtolower($this->get_visitor_country());
         $price_field_mapping = $this->get_country_price_field_mapping($user_country);
     

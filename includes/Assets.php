@@ -54,7 +54,7 @@ class Assets{
      *
      * @return void
      */
-    public function register_assets() {
+    public function register_assets( $hook ) {
         $scripts = $this->get_scripts();
         $styles  = $this->get_styles();
 
@@ -66,8 +66,9 @@ class Assets{
 
         foreach ( $styles as $handle => $style ) {
             $deps = isset( $style['deps'] ) ? $style['deps'] : false;
-
-            wp_enqueue_style( $handle, $style['src'], $deps, $style['version'] );
+            if( 'toplevel_page_adsw_currency_switcher' === $hook ) {
+                wp_enqueue_style( $handle, $style['src'], $deps, $style['version'] );
+            }
         }
     }
 }

@@ -22,7 +22,8 @@ class Post_Meta{
      */
     public function add_custom_product_fields(){
         global $post, $woocommerce;
-        $selectedCountries = get_option( 'selected_countries_option', [] );
+
+        $selectedCountries = get_option( 'adswcs_selected_countries_option', [] );
         echo '<div id="country_prices" class="woocommerce_options_panel">';
         $get_all_countries = $this->get_countries();
         
@@ -66,8 +67,8 @@ class Post_Meta{
      *
      * @param int $post_id The ID of the product being updated.
      */
-    public function save_custom_product_fields($post_id){
-        $selectedCountries = get_option('selected_countries_option');
+    public function save_custom_product_fields( $post_id ){
+        $selectedCountries = get_option('adswcs_selected_countries_option');
     
         foreach ($selectedCountries as $countryCode) {
             $regularPriceMetaKey = '_regular_price_' . strtolower(  $countryCode );
