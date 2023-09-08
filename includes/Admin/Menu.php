@@ -62,7 +62,10 @@ class Menu{
         if (isset($_POST['action']) && $_POST['action'] === 'update' && isset($_POST['_wpnonce'])) {
             if (wp_verify_nonce($_POST['_wpnonce'], 'adswcs_country_nonce')) {
                 $selected_countries = isset($_POST['adswcs_selected_countries_option']) ? $_POST['adswcs_selected_countries_option'] : array();
+                $selected_default_country = isset($_POST['user_default_country']) ? $_POST['user_default_country'] : array();
+
                 update_option('adswcs_selected_countries_option', $selected_countries);
+                update_option('adswcs_default_country', $selected_default_country);                
                 wp_redirect(admin_url('admin.php?page=adsw_currency_switcher&success=true'));
                 exit;
             } else {

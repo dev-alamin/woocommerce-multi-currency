@@ -24,36 +24,41 @@ class Visitor {
      * @param string $currency The current WooCommerce currency.
      * @return string The updated currency based on the visitor's country.
      */
-    public function change_woocommerce_currency_based_on_country($currency) {
+    public function change_woocommerce_currency_based_on_country( $currency ) {
         $countries = $this->get_countries();
-        $country = $this->get_visitor_country();
-        
-        foreach ($countries as $countryInfo) {
-            if ($countryInfo['code'] === $country && isset($countryInfo['currency'])) {
-                return $countryInfo['currency']; // Return the corresponding currency if found
+        $visitor_country = $this->get_visitor_country();
+        $selectedCountries = get_option( 'adswcs_selected_countries_option', [] );
+        $default_currency = $this->get_currency_by_country( get_option( 'adswcs_default_country', [] ) );
+
+        if( in_array(  $visitor_country , $selectedCountries ) ) {
+            foreach ( $countries as $countryInfo ) {
+                if ($countryInfo['code'] === $visitor_country && isset($countryInfo['currency'])) {
+                    return $countryInfo['currency'];
+                }
             }
+        }else{
+            return $default_currency;
         }
-        
+
         return $currency;
     }
-    
-    
+
     public function set_currency_based_on_country() {
         $visitor_country = $this->get_visitor_country();
         $countries = $this->get_countries();
-        $currency = $visitor_country; 
-        
-        foreach ($countries as $country) {
-            if ($country['code'] === $visitor_country) {
-                $currency = $country['currency']; // Set currency based on the visitor's country code
-                break; // Stop looping once a match is found
+        $selectedCountries = get_option( 'adswcs_selected_countries_option', [] );
+        $currency = $this->get_currency_by_country( get_option( 'adswcs_default_country', [] ) ); 
+
+        if( in_array(  $visitor_country , $selectedCountries ) ) {
+            foreach ($countries as $country) {
+                if ($country['code'] === $visitor_country) {
+                    $currency = $country['currency'];
+                    break;
+                }
             }
         }
-    
-        // Update the WooCommerce currency option
         update_option('woocommerce_currency', $currency);
     }
-    
 
     /**
      * Adjust product prices based on the visitor's country.
@@ -63,10 +68,15 @@ class Visitor {
      * @return float The updated product price.
      */
     public function adjust_product_prices_based_on_country($price, $product) {
+        $default_country = get_option( 'adswcs_default_country', [] );
         $user_country = strtolower($this->get_visitor_country());
         $price_field_mapping = $this->get_country_price_field_mapping($user_country);
-    
-        if ($price_field_mapping) {
+        $default_mapping = $this->get_country_price_field_mapping($default_country);
+        
+        $visitor_country = $this->get_visitor_country();
+        $selectedCountries = get_option( 'adswcs_selected_countries_option', [] );
+
+        if ($price_field_mapping && in_array(  $visitor_country , $selectedCountries ) ) {
             $regular_price_field = $price_field_mapping['regular_price_field'];
             $sale_price_field = $price_field_mapping['sale_price_field'];
     
@@ -99,11 +109,45 @@ class Visitor {
                     }
                 }
             }
+        }else{
+
+            if ($default_mapping) {
+                $regular_price_field = $default_mapping['regular_price_field'];
+                $sale_price_field = $default_mapping['sale_price_field'];
+        
+                // Get the values of the custom price fields
+                $custom_regular_price = get_post_meta($product->get_id(), $regular_price_field, true);
+                $custom_sale_price = get_post_meta($product->get_id(), $sale_price_field, true);
+                // Get the values of the default WooCommerce price fields
+                $default_regular_price = $product->get_regular_price();
+                $default_sale_price = $product->get_sale_price();
+        
+                // Check if the custom price fields are different from the default fields
+                if ($custom_regular_price !== $default_regular_price || $custom_sale_price !== $default_sale_price) {
+                    if ($custom_regular_price !== '') {
+                        try {
+                            $product->set_regular_price($custom_regular_price);
+                            $product->save();
+                        } catch (\Exception $e) {
+                            echo 'Error updating regular price: ' . $e->getMessage();
+                        }
+                    }
+        
+                    if ($custom_sale_price !== '') {
+                        try {
+                            $product->set_sale_price($custom_sale_price);
+                            $product->save();
+                        } catch (\Exception $e) {
+                            echo 'Error updating sale price: ' . $e->getMessage();
+                        }
+                    }
+            }
+            }
         }
     
         return $price;
     }
-    
+
     /**
      * Get the mapping of country codes to custom price field names.
      *
@@ -116,7 +160,7 @@ class Visitor {
 
         return isset($mapping[$user_country]) ? $mapping[$user_country] : false;
     }
-    
+
     /**
      * Register custom meta fields for WooCommerce products.
      */
@@ -139,4 +183,31 @@ class Visitor {
             }
         }
     }
+
+    /**
+     * Get the currency code associated with a specific country.
+     *
+     * This function searches for the currency code of the provided country code
+     * within the list of supported countries and their corresponding currencies.
+     *
+     * @param string $country The ISO country code for which to retrieve the currency.
+     *
+     * @return string The currency code associated with the provided country code.
+     *                If the country code is not found, a default message is returned.
+     *
+     * @since 1.0
+     */
+    public function get_currency_by_country( $country = '' ) {
+        $all_countries = $this->get_countries();
+        $default = __( 'No country is found sorry', 'ads-currency-switcher' );
+
+        foreach( $all_countries as $count ) {
+            if( $count['code']  === $country ) {
+                return $count['currency'];
+            }
+        }
+
+        return $default;
+    }
+
 }

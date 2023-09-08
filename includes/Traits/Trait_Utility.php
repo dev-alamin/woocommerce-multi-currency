@@ -13,7 +13,7 @@ trait Trait_Utility{
     */
     public function get_visitor_country() {
         
-        if(function_exists( 'wc_get_base_location' ) ) {
+        if( function_exists( 'wc_get_base_location' ) ) {
             $this->store_location = wc_get_base_location()['country']; // Woocommerce settings country\state
         }
 
@@ -27,12 +27,12 @@ trait Trait_Utility{
         try {
             // Perform a geolocation lookup
             $record = $reader->country($ip_address);
-
+        
             $country_code = $record->country->isoCode;
-
+        
             return $country_code;
         } catch (\GeoIp2\Exception\AddressNotFoundException $e) {
-            return $default_country; 
+            return 'AM';
         }
     }
 }

@@ -2,10 +2,24 @@
     <div class="wrap">
        <h2><?php _e( 'Select Countries', 'ads-currency-switcher' ); ?></h2>
        <p><?php _e( ' The selected countries will be avaialble to put the price.', 'ads-currency-switcher' ) ?></p>
+       <p><?php _e( 'Use this shortcode to show product anywhere. <b>[ads_get_price_by_id id="123"]</b> rememeber to change id with actual ID of product', 'ads-currency-switcher' ); ?></p>
        <form method="post">
            <?php
            settings_fields('country_options');
            do_settings_sections('country_options');
+
+           $default_country_checked = get_option( 'adswcs_default_country', [] );
+
+            echo '<h4>' . __('Please choose default country for the rest of the country you will not cover.', 'ads-currency-switcher') . '</h4>';
+            echo '<select name="user_default_country">';
+            foreach ($all_countries as $country) {
+                $country_code = $country['code'];
+                $country_name = __(  $country['name'], 'ads-currency-switcher' );
+                $selected = ($country_code === $default_country_checked) ? 'selected' : '';
+                echo "<option value='$country_code' $selected>$country_name</option>";
+            }
+            echo '</select>';
+
            ?>
            <div class="country-columns">
                <?php
