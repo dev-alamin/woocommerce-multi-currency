@@ -32,7 +32,7 @@ trait Trait_Utility{
         
             return $country_code;
         } catch (\GeoIp2\Exception\AddressNotFoundException $e) {
-            return 'AM';
+            return $default_country;
         }
     }
 }

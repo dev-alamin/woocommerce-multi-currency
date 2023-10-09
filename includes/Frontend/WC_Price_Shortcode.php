@@ -1,18 +1,11 @@
 <?php 
 namespace ADSWCS\Frontend;
 
-use ADSWCS\Traits\Trait_Country;
-use ADSWCS\Traits\Trait_Utility;
-
 /**
  * Class WC_Price_Shortcode
  * Handles the WooCommerce price shortcode.
  */
 class WC_Price_Shortcode {
-
-    use Trait_Country;
-    use Trait_Utility;
-
     /**
      * Constructor.
      */
@@ -38,22 +31,38 @@ class WC_Price_Shortcode {
             'id' => null,
         ), $atts, 'bartag' );
 
-        // Use the currency symbol from your Trait_Country trait
-        $country_data = $this->get_country_data(); 
-        $currency_symbol = isset($country_data['symbol']) ? $country_data['symbol'] : '$';
-
         $cache_buster = time(); // Use current timestamp as cache buster
 
         ob_start();
 
         if ( intval( $atts['id'] ) > 0 && function_exists( 'wc_get_product' ) ) {
             $_product = wc_get_product( $atts['id'] );
-            $regular_price = wc_format_decimal( $_product->get_regular_price(), 0 );
-            $sale_price = wc_format_decimal( $_product->get_price(), 0 );
+            $regular_price = wc_price( $_product->get_regular_price());
+
+            $_price = $_product->get_price();
+            $sale_price = $_product->get_sale_price();
+            $regular_price_formated = 
+            $_price_formatted = number_format($_price, ($_price == intval($_price)) ? 0 : 2);
+            $sale_price_formatted = number_format($sale_price, ($sale_price == intval($sale_price)) ? 0 : 2);
+
+            // Format the price
+            $_price = number_format($_price, ($_price == intval($_price)) ? 0 : 2);
+
+            // Format the sale price
+            $sale_price = number_format($sale_price, ($sale_price == intval($sale_price)) ? 0 : 2);
             ?>
             <p class="adswcs-custom-price">
-                <span class="price price-regular"><?php echo $currency_symbol . $regular_price; ?></span>
-                <span class="price price-sale"><?php echo $currency_symbol . $sale_price; ?></span>
+                <?php if( ! empty( $regular_price ) ) : ?>
+                    <span class="price price-regular"><?php echo $regular_price; ?></span>
+                <?php endif; ?>
+                
+                <?php if( !empty( $sale_price ) ) : ?>
+                    <span class="price price-sale"><?php echo $sale_price; ?></span>
+                <?php endif; ?>
+                
+                <?php if( ! empty( $_price ) ): ?>
+                    <span class="price price-sale"><?php echo $_price; ?></span>
+                <?php endif; ?>
             </p>
             <script>
                 var cacheBuster = <?php echo $cache_buster; ?>;
@@ -64,24 +73,4 @@ class WC_Price_Shortcode {
         $output = ob_get_clean();
         return $output;
     }
-
-    /**
-     * Get country data from the Trait_Country trait based on the provided country code.
-     *
-     * @param string $country_code The country code.
-     * @return array|false The country data or false if not found.
-     */
-    private function get_country_data() {
-        $country_code = $this->get_visitor_country();
-        $countries = $this->get_countries();
-
-        foreach ($countries as $country) {
-            if ($country['code'] === $country_code) {
-                return $country;
-            }
-        }
-
-        return false;
-    }
 }
-

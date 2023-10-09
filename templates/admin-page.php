@@ -8,17 +8,7 @@
            settings_fields('country_options');
            do_settings_sections('country_options');
 
-           $default_country_checked = get_option( 'adswcs_default_country', [] );
 
-            echo '<h4>' . __('Please choose default country for the rest of the country you will not cover.', 'ads-currency-switcher') . '</h4>';
-            echo '<select name="user_default_country">';
-            foreach ($all_countries as $country) {
-                $country_code = $country['code'];
-                $country_name = __(  $country['name'], 'ads-currency-switcher' );
-                $selected = ($country_code === $default_country_checked) ? 'selected' : '';
-                echo "<option value='$country_code' $selected>$country_name</option>";
-            }
-            echo '</select>';
 
            ?>
            <div class="country-columns">
@@ -36,24 +26,44 @@
                 $country_currency_symbol = $country['symbol'];
             
                 $checked = in_array($country_code, $selected_countries) ? 'checked' : '';
-            
-                // Open a new column div at the start of each column
-                if ($column_count % $countries_per_column === 0) {
-                    echo '<div class="column">';
+
+                    ?>
+                    <?php
                 }
-            
-                echo "<label><input type='checkbox' name='adswcs_selected_countries_option[]' value='$country_code' $checked> <span class='symbol'> $country_currency_symbol - </span>  $country_name </label><br>";
-            
-                $column_count++;
-            
-                // Close the column div at the end of each column
-                if ($column_count % $countries_per_column === 0 || $column_count === $total_countries) {
-                    echo '</div>';
-                }
-            }
+
                ?>
+                <div class="adswcs-choose-country single-block">
+                    <h1 class="wp-heading-inline"><?php _e( 'Choose the country you will put price for', 'ads-currency-switcher' ); ?></h1>
+                    
+                    <select name="adswcs_selected_countries_option[]" data-placeholder="<?php _e('Begin typing the name of country', 'ads-currency-switcher'); ?>" multiple class="adswcs-country-chosen-select">
+                        <?php
+                        foreach ($all_countries as $country) {
+                            $isSelected = in_array($country['code'], $selected_countries) ? 'selected' : '';
+                            echo "<option value='{$country['code']}' $isSelected>{$country['name']}</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <?php
+           $default_country_checked = get_option( 'adswcs_default_country', [] );
+            echo '<div class="adswcs-choose-country single-block">';
+           echo '<h1 class="wp-heading-inline">' . __('Please choose default country for the rest of the country you will not cover.', 'ads-currency-switcher') . '</h1>';
+           echo '<select name="user_default_country">';
+           foreach ($all_countries as $country) {
+               $country_code = $country['code'];
+               $country_name = __(  $country['name'], 'ads-currency-switcher' );
+               $selected = ($country_code === $default_country_checked) ? 'selected' : '';
+               echo "<option value='$country_code' $selected>$country_name</option>";
+           }
+           echo '</select>';
+           echo '</div>';
+           ?>
            </div>
-           <?php
+
+           
+           <?php 
+
            wp_nonce_field('adswcs_country_nonce');
 
            submit_button('Save Selected Countries', 'primary', 'submit'); ?>

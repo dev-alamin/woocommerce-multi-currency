@@ -18,16 +18,21 @@ class Assets{
      */
     private function get_scripts() {
         return [
-            // 'academy-script' => [
-            //     'src'     => ADSWCS_PLUGIN_PATH . '/js/frontend.js',
-            //     'version' => filemtime( ADSWCS_PLUGIN_PATH . '/assets/js/frontend.js' ),
-            //     'deps'    => [ 'jquery' ]
-            // ],
-            // 'academy-admin-script' => [
-            //     'src'     => ADSWCS_PLUGIN_PATH . '/js/admin.js',
-            //     'version' => filemtime( ADSWCS_PLUGIN_PATH . '/assets/js/admin.js' ),
-            //     'deps'    => [ 'jquery', 'wp-util' ]
-            // ],
+            'adswcs-select-choosen' => [
+                'src'     => '//cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js',
+                'version' => filemtime( ADSWCS_PLUGIN_PATH . '/assets/js/frontend.js' ),
+                'deps'    => [ 'jquery' ]
+            ],
+            'adswcs-frontend-script' => [
+                'src'     => ADSWCS_PLUGIN_ASSETS . '/js/frontend.js',
+                'version' => filemtime( ADSWCS_PLUGIN_PATH . 'assets/js/frontend.js' ),
+                'deps'    => [ 'jquery' ]
+            ],
+            'adswcs-admin-script' => [
+                'src'     => ADSWCS_PLUGIN_ASSETS . '/js/admin.js',
+                'version' => filemtime( ADSWCS_PLUGIN_PATH . 'assets/js/admin.js' ),
+                'deps'    => [ 'jquery', 'wp-util', 'adswcs-select-choosen' ]
+            ],
         ];
     }
 
@@ -38,12 +43,16 @@ class Assets{
      */
     private function get_styles() {
         return [
+            'adswcs-choosen-select' => [
+                'src'     => '//cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css',
+                'version' => filemtime( ADSWCS_PLUGIN_PATH . '/assets/css/frontend.css' )
+            ],
             'adswcs-style' => [
-                'src'     => ADSWCS_PLUGIN_URL . 'assets/css/frontend.css',
+                'src'     => ADSWCS_PLUGIN_ASSETS . '/css/frontend.css',
                 'version' => filemtime( ADSWCS_PLUGIN_PATH . '/assets/css/frontend.css' )
             ],
             'adswcs-admin-style' => [
-                'src'     => ADSWCS_PLUGIN_URL . 'assets/css/admin.css',
+                'src'     => ADSWCS_PLUGIN_ASSETS . '/css/admin.css',
                 'version' => filemtime( ADSWCS_PLUGIN_PATH . '/assets/css/admin.css' )
             ],
         ];
@@ -58,11 +67,10 @@ class Assets{
         $scripts = $this->get_scripts();
         $styles  = $this->get_styles();
 
-        // foreach ( $scripts as $handle => $script ) {
-        //     $deps = isset( $script['deps'] ) ? $script['deps'] : false;
-
-        //     wp_register_script( $handle, $script['src'], $deps, $script['version'], true );
-        // }
+        foreach ( $scripts as $handle => $script ) {
+            $deps = isset( $script['deps'] ) ? $script['deps'] : false;
+            wp_enqueue_script( $handle, $script['src'], $deps, $script['version'], true );
+        }
 
         foreach ( $styles as $handle => $style ) {
             $deps = isset( $style['deps'] ) ? $style['deps'] : false;

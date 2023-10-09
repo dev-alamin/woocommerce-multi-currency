@@ -69,11 +69,10 @@ class Visitor {
      */
     public function adjust_product_prices_based_on_country($price, $product) {
         $default_country = get_option( 'adswcs_default_country', [] );
-        $user_country = strtolower($this->get_visitor_country());
-        $price_field_mapping = $this->get_country_price_field_mapping($user_country);
+        $visitor_country = $this->get_visitor_country();
+        $price_field_mapping = $this->get_country_price_field_mapping($visitor_country);
         $default_mapping = $this->get_country_price_field_mapping($default_country);
         
-        $visitor_country = $this->get_visitor_country();
         $selectedCountries = get_option( 'adswcs_selected_countries_option', [] );
 
         if ($price_field_mapping && in_array(  $visitor_country , $selectedCountries ) ) {
@@ -89,7 +88,7 @@ class Visitor {
             $default_sale_price = $product->get_sale_price();
     
             // Check if the custom price fields are different from the default fields
-            if ($custom_regular_price !== $default_regular_price || $custom_sale_price !== $default_sale_price) {
+            if ($custom_regular_price !== $default_regular_price) {
                 // Update the product's prices with the custom fields
                 if ($custom_regular_price !== '') {
                     try {
@@ -99,7 +98,8 @@ class Visitor {
                         echo 'Error updating regular price: ' . $e->getMessage();
                     }
                 }
-    
+            }
+            if($custom_sale_price !== $default_sale_price ) {
                 if ($custom_sale_price !== '') {
                     try {
                         $product->set_sale_price($custom_sale_price);
@@ -109,6 +109,7 @@ class Visitor {
                     }
                 }
             }
+        
         }else{
 
             if ($default_mapping) {
@@ -123,7 +124,7 @@ class Visitor {
                 $default_sale_price = $product->get_sale_price();
         
                 // Check if the custom price fields are different from the default fields
-                if ($custom_regular_price !== $default_regular_price || $custom_sale_price !== $default_sale_price) {
+                if ($custom_regular_price !== $default_regular_price ) {
                     if ($custom_regular_price !== '') {
                         try {
                             $product->set_regular_price($custom_regular_price);
@@ -132,7 +133,8 @@ class Visitor {
                             echo 'Error updating regular price: ' . $e->getMessage();
                         }
                     }
-        
+                }
+                    if($custom_sale_price !== $default_sale_price){
                     if ($custom_sale_price !== '') {
                         try {
                             $product->set_sale_price($custom_sale_price);
@@ -141,7 +143,8 @@ class Visitor {
                             echo 'Error updating sale price: ' . $e->getMessage();
                         }
                     }
-            }
+                }
+            
             }
         }
     
@@ -149,17 +152,30 @@ class Visitor {
     }
 
     /**
-     * Get the mapping of country codes to custom price field names.
+     * Get the mapping between a user's country code and the corresponding price field.
      *
-     * @param string $user_country The user's country code.
-     * @return array|false The mapping of price fields or false if not found.
+     * This method retrieves a mapping between a user's country code (in uppercase) and
+     * the corresponding price field. The mapping is based on the result returned by the
+     * get_map method.
+     *
+     * @param string $user_country The uppercase ISO country code of the user.
+     *
+     * @return mixed|array|false The mapping between the user's country and the price field,
+     *                           or false if no mapping is found.
+     *
+     * @since 1.0
      */
     private function get_country_price_field_mapping($user_country) {
-        $user_country = strtoupper( $user_country );
         $mapping = $this->get_map();
+    
+        if (is_array($mapping) && array_key_exists($user_country, $mapping)) {
+            return $mapping[$user_country];
+        } else {
+            // Handle the case where the country mapping is not found.
+            return null; // You can return false, null, or any other appropriate value here.
+        }
+    }    
 
-        return isset($mapping[$user_country]) ? $mapping[$user_country] : false;
-    }
 
     /**
      * Register custom meta fields for WooCommerce products.

@@ -113,8 +113,9 @@ final class ADSW_Currency_Switcher {
     public function define_constants(){
         define( 'ADSWCS_VERSION', $this->version );
         define( 'ADSWCS_PLUGIN', __FILE__ );
-        define( 'ADSWCS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+        define( 'ADSWCS_PLUGIN_URL', plugins_url( '',  ADSWCS_PLUGIN ) );
         define( 'ADSWCS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+        define( 'ADSWCS_PLUGIN_ASSETS', ADSWCS_PLUGIN_URL . '/assets');
     }
 
     /**

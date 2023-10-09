@@ -4,12 +4,25 @@
     background: #fff;
 }
 
-.country-columns{
+.country-columns {
     display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 }
 
 .country-columns .column{
     margin-right:20px;
+}
+
+.country-columns .single-block h1{
+    margin-bottom: 12px;
+}
+.country-columns .single-block{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    margin-top: 15px;
 }
     /* Style the checkboxes */
 input[type="checkbox"] {
@@ -49,4 +62,11 @@ label {
     margin-left: 8px;
     margin-top: 15px;
     font-size: 14px;
+}
+
+
+@media (max-width:768px) {
+    .country-columns {
+        flex-direction: column;
+    }
 }
