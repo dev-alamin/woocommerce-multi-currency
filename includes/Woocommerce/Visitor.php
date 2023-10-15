@@ -95,7 +95,7 @@ class Visitor {
                         $product->set_regular_price($custom_regular_price);
                         $product->save();
                     } catch (\Exception $e) {
-                        echo 'Error updating regular price: ' . $e->getMessage();
+                        echo 'Error updating regular price: ' . esc_html($e->getMessage());
                     }
                 }
             }
@@ -105,7 +105,7 @@ class Visitor {
                         $product->set_sale_price($custom_sale_price);
                         $product->save();
                     } catch (\Exception $e) {
-                        echo 'Error updating sale price: ' . $e->getMessage();
+                        echo 'Error updating sale price: ' . esc_html($e->getMessage());
                     }
                 }
             }
@@ -130,7 +130,7 @@ class Visitor {
                             $product->set_regular_price($custom_regular_price);
                             $product->save();
                         } catch (\Exception $e) {
-                            echo 'Error updating regular price: ' . $e->getMessage();
+                            echo 'Error updating regular price: ' . esc_html($e->getMessage());
                         }
                     }
                 }
@@ -140,7 +140,7 @@ class Visitor {
                             $product->set_sale_price($custom_sale_price);
                             $product->save();
                         } catch (\Exception $e) {
-                            echo 'Error updating sale price: ' . $e->getMessage();
+                            echo 'Error updating sale price: ' . esc_html($e->getMessage());
                         }
                     }
                 }

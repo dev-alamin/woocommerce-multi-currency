@@ -48,8 +48,13 @@ class Menu{
         if( file_exists( $file ) ) {
             $all_countries = $this->get_countries();
             if (isset($_POST['submit'])) {
-                $this->save_selected_countries();
-            }
+                // Replace 'adswcs_country_nonce' with your actual nonce name
+                if (isset($_POST['adswcs_country_nonce']) && check_admin_referer('adswcs_country_nonce')) {
+                    $this->save_selected_countries();
+                } else {
+                    echo esc_html__( 'Sorry, action is not allowed', 'ads-currency-switcher' );
+                }
+            }            
 
             require_once $file;
         }
@@ -69,7 +74,7 @@ class Menu{
                 wp_redirect(admin_url('admin.php?page=adsw_currency_switcher&success=true'));
                 exit;
             } else {
-                echo _( 'Nonce verification failed. Please try again.', 'ads-currency-switcher' );
+                echo esc_html__( 'Nonce verification failed. Please try again.', 'ads-currency-switcher' );
             }
         }
     }

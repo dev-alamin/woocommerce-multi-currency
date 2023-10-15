@@ -40,9 +40,13 @@ class Post_Meta{
                 woocommerce_wp_text_input(
                     array(
                         'id' => '_regular_price_' . strtolower( $countryCode ),
-                        'label' => __('Regular Price ' . $countryCode . ' (' . $currencySymbol . ')', 'ads-currency-switcher'),
+                        'label' => sprintf(
+                            __('Regular Price %s (%s)', 'ads-currency-switcher'),
+                            $countryCode,
+                            $currencySymbol
+                        ),                        
                         'desc_tip' => 'true',
-                        'description' => __('Enter the regular price for ' . $countryCode, 'ads-currency-switcher'),
+                        'description' => __('Enter the regular price for ', 'ads-currency-switcher') . $countryCode,
                         'type' => 'text',
                     )
                 );
@@ -50,9 +54,13 @@ class Post_Meta{
                 woocommerce_wp_text_input(
                     array(
                         'id' => '_sale_price_' . strtolower( $countryCode ),
-                        'label' => __('Sale Price ' . $countryCode . ' (' . $currencySymbol . ')', 'ads-currency-switcher'),
+                        'label' => sprintf(
+                            __('Sale Price %s (%s)', 'ads-currency-switcher'),
+                            $countryCode,
+                            $currencySymbol
+                        )     ,                   
                         'desc_tip' => 'true',
-                        'description' => __('Enter the sale price for ' . $countryCode, 'ads-currency-switcher'),
+                        'description' => __('Enter the sale price for ', 'ads-currency-switcher') . $countryCode,
                         'type' => 'text',
                     )
                 );

@@ -53,19 +53,19 @@ class WC_Price_Shortcode {
             ?>
             <p class="adswcs-custom-price">
                 <?php if( ! empty( $regular_price ) ) : ?>
-                    <span class="price price-regular"><?php echo $regular_price; ?></span>
+                    <span class="price price-regular"><?php esc_html_e($regular_price); ?></span>
                 <?php endif; ?>
                 
                 <?php if( !empty( $sale_price ) ) : ?>
-                    <span class="price price-sale"><?php echo $sale_price; ?></span>
+                    <span class="price price-sale"><?php esc_html_e($sale_price); ?></span>
                 <?php endif; ?>
                 
                 <?php if( ! empty( $_price ) ): ?>
-                    <span class="price price-sale"><?php echo $_price; ?></span>
+                    <span class="price price-sale"><?php esc_html_e($_price); ?></span>
                 <?php endif; ?>
             </p>
             <script>
-                var cacheBuster = <?php echo $cache_buster; ?>;
+                var cacheBuster = <?php esc_html_e($cache_buster); ?>;
             </script>
             <?php
         }
