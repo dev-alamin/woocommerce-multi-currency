@@ -41,9 +41,6 @@ class WC_Price_Shortcode {
 
             $_price = $_product->get_price();
             $sale_price = $_product->get_sale_price();
-            $regular_price_formated = 
-            $_price_formatted = number_format($_price, ($_price == intval($_price)) ? 0 : 2);
-            $sale_price_formatted = number_format($sale_price, ($sale_price == intval($sale_price)) ? 0 : 2);
 
             // Format the price
             $_price = number_format($_price, ($_price == intval($_price)) ? 0 : 2);
@@ -53,19 +50,19 @@ class WC_Price_Shortcode {
             ?>
             <p class="adswcs-custom-price">
                 <?php if( ! empty( $regular_price ) ) : ?>
-                    <span class="price price-regular"><?php esc_html_e($regular_price); ?></span>
+                    <span class="price price-regular"><?php echo wp_kses_post($regular_price); ?></span>
                 <?php endif; ?>
                 
                 <?php if( !empty( $sale_price ) ) : ?>
-                    <span class="price price-sale"><?php esc_html_e($sale_price); ?></span>
+                    <span class="price price-sale"><?php echo wp_kses_post($sale_price); ?></span>
                 <?php endif; ?>
                 
                 <?php if( ! empty( $_price ) ): ?>
-                    <span class="price price-sale"><?php esc_html_e($_price); ?></span>
+                    <span class="price price-sale"><?php echo wp_kses_post($_price); ?></span>
                 <?php endif; ?>
             </p>
             <script>
-                var cacheBuster = <?php esc_html_e($cache_buster); ?>;
+                var cacheBuster = <?php echo $cache_buster; ?>;
             </script>
             <?php
         }

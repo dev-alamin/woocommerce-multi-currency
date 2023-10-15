@@ -43,7 +43,7 @@ class Menu{
      * Callback function for the admin page.
      */
     public function adswcs_callback(){
-        $file = ADSWCS_PLUGIN_PATH . 'templates/admin-page.php';
+        $file = __DIR__ . '/templates/admin-page.php';
 
         if( file_exists( $file ) ) {
             $all_countries = $this->get_countries();
@@ -57,6 +57,9 @@ class Menu{
             }            
 
             require_once $file;
+            
+        }else{
+            echo esc_html__( 'Sorry, file does not exists. Contact plugin support.', 'ads-currency-switcher' );
         }
     }
 
