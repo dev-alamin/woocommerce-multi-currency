@@ -39,24 +39,15 @@ class WC_Price_Shortcode {
             $_product = wc_get_product( $atts['id'] );
             $regular_price = wc_price( $_product->get_regular_price());
 
-            $_price = $_product->get_price();
-            $sale_price = $_product->get_sale_price();
-
-            // Format the price
-            $_price = number_format($_price, ($_price == intval($_price)) ? 0 : 2);
-
-            // Format the sale price
-            $sale_price = number_format($sale_price, ($sale_price == intval($sale_price)) ? 0 : 2);
+            $_price = wc_price( $_product->get_price() );
+            $sale_price = $_product->get_sale_price() ? wc_price( $_product->get_sale_price() ) : '';
             ?>
+
             <p class="adswcs-custom-price">
-                <?php if( ! empty( $regular_price ) ) : ?>
+                <?php if( ! empty( $regular_price ) && ! empty( $sale_price ) ) : ?>
                     <span class="price price-regular"><?php echo wp_kses_post($regular_price); ?></span>
                 <?php endif; ?>
-                
-                <?php if( !empty( $sale_price ) ) : ?>
-                    <span class="price price-sale"><?php echo wp_kses_post($sale_price); ?></span>
-                <?php endif; ?>
-                
+
                 <?php if( ! empty( $_price ) ): ?>
                     <span class="price price-sale"><?php echo wp_kses_post($_price); ?></span>
                 <?php endif; ?>

@@ -1,4 +1,4 @@
-# Woocommerce Currency Switcher - Simplify Currency Switching and Pricing in WooCommerce
+# Woocommerce Currency Switcher - WC Multicurrency
 
 Welcome to Woocommerce Currency Switcher, a feature-rich and user-friendly solution for effortless currency switching and pricing management in your WooCommerce store. This plugin ensures a seamless experience for international customers by displaying prices in their local currency and enabling customized pricing based on different regions.
 
